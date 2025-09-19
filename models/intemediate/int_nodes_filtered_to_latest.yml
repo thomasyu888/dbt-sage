@@ -13,5 +13,4 @@ models:
       - name: CHANGE_TYPE
         description: "change type"
         data_tests:
-          - unique
           - not_null

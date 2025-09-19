@@ -11,6 +11,7 @@
     materialized='incremental',
     unique_key='id',
     incremental_strategy='merge',
+    schema='my_custom_schema'
 )}}
 
 WITH latest_unique_rows AS (
