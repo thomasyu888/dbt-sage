@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_synapse__nodesnapshots
+    description: "Nodesnapshots renamed column headers"
+    columns:
+      - name: node_id
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+      - name: CHANGE_TYPE
+        description: "change type"
+        data_tests:
+          - not_null
