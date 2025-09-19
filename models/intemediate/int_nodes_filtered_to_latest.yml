@@ -5,7 +5,7 @@ models:
   - name: int_nodes_filtered_to_latest
     description: "Nodesnapshots filtered down to the latest table"
     columns:
-      - name: id
+      - name: node_id
         description: "The primary key for this table"
         data_tests:
           - unique

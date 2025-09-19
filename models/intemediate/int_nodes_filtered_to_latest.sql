@@ -9,9 +9,9 @@
 
 {{ config(
     materialized='incremental',
-    unique_key='id',
+    unique_key='node_id',
     incremental_strategy='merge',
-    schema='my_custom_schema'
+    schema='latest'
 )}}
 
 WITH latest_unique_rows AS (
@@ -20,23 +20,23 @@ WITH latest_unique_rows AS (
         CHANGE_TIMESTAMP,
         CHANGE_USER_ID,
         SNAPSHOT_TIMESTAMP,
-        ID,
-        BENEFACTOR_ID,
-        PROJECT_ID,
-        PARENT_ID,
+        node_id,
+        benefactor_node_id,
+        project_node_id,
+        parent_node_id,
         NODE_TYPE,
         CREATED_ON,
-        CREATED_BY,
+        created_by_user_id,
         MODIFIED_ON,
-        MODIFIED_BY,
+        modified_by_user_id,
         VERSION_NUMBER,
         FILE_HANDLE_ID,
-        NAME,
+        node_name,
         IS_PUBLIC,
-        IS_CONTROLLED,
-        IS_RESTRICTED,
+        is_controlled_access,
+        is_restricted_access,
         SNAPSHOT_DATE,
-        EFFECTIVE_ARS,
+        effective_access_requirements,
         ANNOTATIONS,
         DERIVED_ANNOTATIONS,
         VERSION_COMMENT,
@@ -53,12 +53,12 @@ WITH latest_unique_rows AS (
         VERSION_HISTORY,
         PROJECT_STORAGE_USAGE
     FROM
-        {{ source('synapse_data_warehouse', 'nodesnapshots') }}
+        {{ ref('stg_synapse__nodesnapshots') }}
     WHERE
         SNAPSHOT_DATE >= CURRENT_DATE - INTERVAL '30 DAYS' AND
         CREATED_ON > DATE('2025-09-10')
     QUALIFY ROW_NUMBER() OVER (
-            PARTITION BY id
+            PARTITION BY node_id
             ORDER BY change_timestamp DESC, snapshot_timestamp DESC
         ) = 1
 )
@@ -67,9 +67,9 @@ SELECT
 FROM
     latest_unique_rows
 WHERE
-    NOT (CHANGE_TYPE = 'DELETE' OR BENEFACTOR_ID = '1681355' OR PARENT_ID = '1681355') -- 1681355 is the synID of the trash can on Synapse
+    NOT (CHANGE_TYPE = 'DELETE' OR BENEFACTOR_NODE_ID = '1681355' OR PARENT_NODE_ID = '1681355') -- 1681355 is the synID of the trash can on Synapse
 ORDER BY
-    latest_unique_rows.id ASC
+    latest_unique_rows.node_id ASC
 
 /*
     Uncomment the line below to remove records with null `id` values
