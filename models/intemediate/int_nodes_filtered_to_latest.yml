@@ -1,0 +1,17 @@
+
+version: 2
+
+models:
+  - name: int_nodes_filtered_to_latest
+    description: "Nodesnapshots filtered down to the latest table"
+    columns:
+      - name: id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: CHANGE_TYPE
+        description: "change type"
+        data_tests:
+          - unique
+          - not_null

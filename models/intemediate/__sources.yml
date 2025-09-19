@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: synapse_data_warehouse # Logical name for the source
+    database: synapse_data_warehouse      # Database containing the raw data
+    schema: synapse_raw # Schema containing the tables
+    tables:
+      - name: nodesnapshots
+        description: "This table contain snapshots of nodes (Nodes are project, file, folders...). Snapshots are taken when nodes are created, updated or deleted. Note: Snapshots are also taken periodically and independently of the changes. The snapshot_timestamp is the time when the snapshot was taken."
+      # - name: customers  # Name of the second raw table
+      #   description: "Customer information"
