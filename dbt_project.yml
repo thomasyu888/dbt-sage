@@ -33,6 +33,8 @@ models:
   +persist_docs:
     relation: true
     columns: true
+  +contract:
+    enforced: true
   staging:
     +materialized: view
   intermediate:

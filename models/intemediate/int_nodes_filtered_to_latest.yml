@@ -3,14 +3,149 @@ version: 2
 
 models:
   - name: int_nodes_filtered_to_latest
-    description: "Nodesnapshots filtered down to the latest table"
+    description: "This table, indexed by ID, contains the latest snapshot of Synapse nodes (projects, files, folders, tables, etc.). It is derived from NODESNAPSHOTS raw data and provides deduplicated node information. The table is refreshed daily and contains only the most recent node entries for each ID from the past 30 days. Each row represents a specific Synapse node with its current state and metadata."
     columns:
+
       - name: node_id
+        data_type: integer
         description: "The primary key for this table"
+        constraints:
+          - type: not_null
+          - type: primary_key # not enforced  -- will warn & include
         data_tests:
           - unique
           - not_null
+
       - name: CHANGE_TYPE
+        data_type: string
         description: "change type"
         data_tests:
           - not_null
+
+      - name: change_user_id
+        data_type: integer
+        description: "The unique identifier of the user who made the change to the node."
+        data_tests:
+          - not_null
+
+      - name: benefactor_node_id
+        data_type: integer
+        description: "The identifier of the ancestor node providing permissions (can be the node itself)."
+        data_tests:
+          - not_null
+
+      - name: project_node_id
+        data_type: integer
+        description: "The project where the node resides. Empty for DELETE changes."
+
+      - name: parent_node_id
+        data_type: integer
+        description: "The unique identifier of the parent in the node hierarchy."
+
+      - name: node_type
+        data_type: string
+        description: "The type of the node (project, folder, file, table, link, entityview, dockerrepo, submissionview, dataset, datasetcollection, materializedview, virtualtable)."
+
+      - name: created_on
+        data_type: timestamp
+        description: "The creation time of the node."
+
+      - name: created_by_user_id
+        data_type: integer
+        description: "The unique identifier of the user who created the node."
+
+      - name: modified_on
+        data_type: timestamp
+        description: "The most recent change time of the node."
+
+      - name: modified_by_user_id
+        data_type: integer
+        description: "The unique identifier of the user who last modified the node."
+
+      - name: version_number
+        data_type: integer
+        description: "The version of the node on which the change occurred, if applicable."
+
+      - name: file_handle_id
+        data_type: integer
+        description: "The unique identifier of the file handle if the node is a file, null otherwise."
+
+      - name: node_name
+        data_type: string
+        description: "The name of the node."
+
+      - name: is_public
+        data_type: boolean
+        description: "If true, READ permission is granted to all users (including anonymous) at snapshot time."
+
+      - name: is_controlled_access
+        data_type: boolean
+        description: "If true, an access requirement managed by the ACT is set on the node."
+
+      - name: is_restricted_access
+        data_type: boolean
+        description: "If true, a terms-of-use access requirement is set on the node."
+
+      - name: effective_access_requirements
+        data_type: variant
+        description: "List of access requirement IDs that apply to the entity at the time of the snapshot."
+
+      - name: annotations
+        data_type: variant
+        description: "JSON representation of user-assigned entity annotations."
+
+      - name: derived_annotations
+        data_type: variant
+        description: "JSON representation of schema-derived entity annotations."
+
+      - name: version_comment
+        data_type: string
+        description: "A short description assigned to this node version."
+
+      - name: version_label
+        data_type: string
+        description: "A short label assigned to this node version."
+
+      - name: alias
+        data_type: string
+        description: "Alias assigned to a project entity if present."
+
+      - name: activity_id
+        data_type: integer
+        description: "Reference to the activity ID assigned to the node."
+
+      - name: column_model_ids
+        data_type: variant
+        description: "List of column IDs assigned to the schema (for tables, views, etc.)."
+
+      - name: scope_ids
+        data_type: variant
+        description: "List of entity IDs included in the scope (for entity/submission views)."
+
+      - name: items
+        data_type: variant
+        description: "List of entity references included in the scope (for dataset, dataset collections)."
+
+      - name: reference
+        data_type: variant
+        description: "Reference to the linked target (for Link entities)."
+
+      - name: is_search_enabled
+        data_type: boolean
+        description: "For table-like entities (EntityView, MaterializedView, etc.), whether full-text search is enabled."
+
+      - name: defining_sql
+        data_type: string
+        description: "For SQL-driven tables (MaterializedView, VirtualTable), the underlying SQL query."
+
+      - name: internal_annotations
+        data_type: variant
+        description: "JSON of internal annotations (dataset checksum, size, count, etc.)."
+
+      - name: version_history
+        data_type: variant
+        description: "List of entity versions at snapshot time."
+
+      - name: project_storage_usage
+        data_type: variant
+        description: "For project nodes, includes storage usage data per storage location."

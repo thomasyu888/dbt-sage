@@ -11,15 +11,14 @@
     materialized='incremental',
     unique_key='node_id',
     incremental_strategy='merge',
-    schema='latest'
+    schema='latest',
+    on_schema_change='append_new_columns'
 )}}
 
 WITH latest_unique_rows AS (
     SELECT
         CHANGE_TYPE,
-        CHANGE_TIMESTAMP,
         CHANGE_USER_ID,
-        SNAPSHOT_TIMESTAMP,
         node_id,
         benefactor_node_id,
         project_node_id,
@@ -35,7 +34,6 @@ WITH latest_unique_rows AS (
         IS_PUBLIC,
         is_controlled_access,
         is_restricted_access,
-        SNAPSHOT_DATE,
         effective_access_requirements,
         ANNOTATIONS,
         DERIVED_ANNOTATIONS,
