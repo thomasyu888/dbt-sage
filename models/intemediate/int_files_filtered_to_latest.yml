@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: int_files_filtered_to_latest
+    description: "This dynamic table, indexed by the ID column, contains the most recent snapshot of file handles."
+    columns:
+      - name: file_handle_id
+        data_type: integer
+        description: "The unique identifier of the file handle (ID). Primary key for this table."
+        data_tests:
+          - not_null
+
+      - name: change_type
+        data_type: string
+        description: "The type of change that occurred on the file handle, e.g., CREATE, UPDATE, DELETE."
+        data_tests:
+          - not_null
+
+      - name: change_user_id
+        data_type: integer
+        description: "The unique identifier of the user who made the change to the file handle."
+
+      - name: created_by_user_id
+        data_type: integer
+        description: "The unique identifier of the user who created the file handle."
+
+      - name: created_on
+        data_type: timestamp
+        description: "The creation timestamp of the file handle."
+
+      - name: modified_on
+        data_type: timestamp
+        description: "The most recent change time of the file handle."
+
+      - name: concrete_type
+        data_type: string
+        description: "The type of the file handle (S3FileHandle, ProxyFileHandle, ExternalFileHandle, ExternalObjectStoreFileHandle, GoogleCloudFileHandle)."
+
+      - name: content_md5
+        data_type: string
+        description: "The MD5 hash (using MD5 algorithm) of the file referenced by the file handle."
+
+      - name: content_type
+        data_type: string
+        description: "Metadata about the content of the file, e.g., application/json, application/zip, application/octet-stream."
+
+      - name: file_name
+        data_type: string
+        description: "The name of the file referenced by the file handle."
+
+      - name: storage_location_id
+        data_type: integer
+        description: "The identifier of the environment where the physical files are stored."
+
+      - name: content_size
+        data_type: integer
+        description: "The size of the file referenced by the file handle."
+
+      - name: bucket
+        data_type: string
+        description: "The bucket where the file is physically stored (applicable for S3 and GCP, otherwise empty)."
+
+      - name: key
+        data_type: string
+        description: "The key name that uniquely identifies the object (file) in the bucket."
+
+      - name: preview_file_handle_id
+        data_type: integer
+        description: "The identifier of the file handle that contains a preview of the file referenced by this file handle."
+
+      - name: is_preview
+        data_type: boolean
+        description: "If true, the file referenced by this file handle is a preview of another file."
+
+      - name: status
+        data_type: string
+        description: "The availability status of the file referenced by the file handle (AVAILABLE, UNLINKED, ARCHIVED)."

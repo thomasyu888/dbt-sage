@@ -1,0 +1,30 @@
+
+
+{{ config(
+    materialized='view',
+    schema='staging'
+)}}
+
+SELECT 
+    CHANGE_TYPE,
+    CHANGE_TIMESTAMP,
+    CHANGE_USER_ID,
+    SNAPSHOT_TIMESTAMP,
+    ID AS FILE_HANDLE_ID,
+    CREATED_BY AS CREATED_BY_USER_ID,
+    CREATED_ON,
+    MODIFIED_ON,
+    CONCRETE_TYPE,
+    CONTENT_MD5,
+    CONTENT_TYPE,
+    FILE_NAME,
+    STORAGE_LOCATION_ID,
+    CONTENT_SIZE,
+    BUCKET,
+    KEY,
+    PREVIEW_ID as PREVIEW_FILE_HANDLE_ID,
+    IS_PREVIEW,
+    STATUS,
+    SNAPSHOT_DATE
+FROM
+    {{ source('synapse_data_warehouse', 'FILESNAPSHOTS') }}
