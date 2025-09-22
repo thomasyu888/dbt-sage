@@ -1,0 +1,23 @@
+{{ config(
+    materialized='view',
+    schema='staging'
+)}}
+
+SELECT
+    TIMESTAMP,
+    USER_ID,
+    PROJECT_ID as project_node_id,
+    FILE_HANDLE_ID,
+    DOWNLOADED_FILE_HANDLE_ID,
+    ASSOCIATION_OBJECT_ID,
+    ASSOCIATION_OBJECT_TYPE,
+    STACK,
+    INSTANCE,
+    RECORD_DATE,
+    SESSION_ID,
+    ROW_NUMBER() OVER (
+        PARTITION BY USER_ID, ASSOCIATION_OBJECT_ID, ASSOCIATION_OBJECT_TYPE, RECORD_DATE
+        ORDER BY TIMESTAMP DESC
+    ) as ROW_NUM
+FROM 
+    {{ source('synapse_data_warehouse', 'FILEDOWNLOAD')}}

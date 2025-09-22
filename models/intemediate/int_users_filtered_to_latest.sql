@@ -1,6 +1,6 @@
 {{ config(
     materialized='incremental',
-    unique_key='node_id',
+    unique_key='user_id',
     incremental_strategy='merge',
     schema='latest',
     on_schema_change='append_new_columns'

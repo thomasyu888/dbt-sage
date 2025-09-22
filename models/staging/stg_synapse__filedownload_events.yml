@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: stg_synapse__filedownload_events
+    description: >
+      Dynamic table containing the most recent file download events.
+      Indexed by `USER_ID`, `ASSOCIATION_OBJECT_ID`, `ASSOCIATION_OBJECT_TYPE`,
+      and `RECORD_DATE`. Data is partitioned by record date for fast and
+      cost-effective queries.
+    columns:
+      - name: TIMESTAMP
+        description: >
+          The time when the file download event is pushed to the queue for recording,
+          after generating the pre-signed URL.
+        data_type: TIMESTAMP_NTZ
+
+      - name: USER_ID
+        description: >
+          PRIMARY KEY (Composite). The ID of the user who downloaded the file.
+        data_type: INTEGER
+
+      - name: project_node_id
+        description: >
+          Unique identifier of the project where the downloaded entity resides.
+          Applicable only for FileEntity and TableEntity.
+        data_type: INTEGER
+
+      - name: FILE_HANDLE_ID
+        description: >
+          Unique identifier of the file handle.
+        data_type: INTEGER
+
+      - name: DOWNLOADED_FILE_HANDLE_ID
+        description: >
+          Unique identifier of the zip file handle containing the downloaded file when
+          requested as a zip/package, otherwise the ID of the file handle itself.
+        data_type: INTEGER
+
+      - name: ASSOCIATION_OBJECT_ID
+        description: >
+          PRIMARY KEY (Composite). Unique identifier of the Synapse object (without
+          "syn" prefix) that wraps the file.
+        data_type: INTEGER
+
+      - name: ASSOCIATION_OBJECT_TYPE
+        description: >
+          PRIMARY KEY (Composite). Type of the Synapse object that wraps the file,
+          e.g., FileEntity, TableEntity, WikiAttachment, WikiMarkdown,
+          UserProfileAttachment, MessageAttachment, TeamAttachment.
+        data_type: STRING
+
+      - name: STACK
+        description: >
+          The stack (prod, dev) on which the download request was processed.
+        data_type: STRING
+
+      - name: INSTANCE
+        description: >
+          The version of the stack that processed the download request.
+        data_type: STRING
+
+      - name: RECORD_DATE
+        description: >
+          PRIMARY KEY (Composite). Partitioning column derived from TIMESTAMP
+          for efficient queries. Should be used in WHERE clauses.
+        data_type: DATE
+
+      - name: SESSION_ID
+        description: >
+          UUID assigned to the API request that triggered this download. Can be joined
+          with `processedaccessrecord` on `session_id` to retrieve additional metadata.
+        data_type: STRING
+
+      - name: ROW_NUM
+        description: >
+          Indexed by `USER_ID`, `ASSOCIATION_OBJECT_ID`, `ASSOCIATION_OBJECT_TYPE`, and `RECORD_DATE` to define
+          a download event. A value of 1 is the "first" download event.
+        data_type: INTEGER
