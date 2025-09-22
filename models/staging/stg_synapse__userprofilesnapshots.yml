@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: stg_synapse__userprofilesnapshots
+    description: "This table contains snapshots of user-profiles. Snapshots are taken when user profiles are created or modified. Note: Snapshots are also taken periodically and independently of the changes. The snapshot_timestamp records when the snapshot was taken."
+    columns:
+      - name: CHANGE_TYPE
+        description: "The type of change that occurred to the user profile, e.g., CREATE, UPDATE (Snapshotting does not capture DELETE change)."
+        data_type: VARCHAR
+      - name: CHANGE_TIMESTAMP
+        description: "The time when any change to the user profile was made (e.g. create or update)."
+        data_type: TIMESTAMP_NTZ
+      - name: CHANGE_USER_ID
+        description: "The unique identifier of the user who made the change to the user profile."
+        data_type: INTEGER
+      - name: SNAPSHOT_TIMESTAMP
+        description: "The time when the snapshot was taken (It is usually after the change happened)."
+        data_type: TIMESTAMP_NTZ
+      - name: USER_ID
+        description: "The unique identifier of the user."
+        data_type: INTEGER
+        data_tests:
+          - not_null
+      - name: USER_NAME
+        description: "The Synapse username."
+        data_type: VARCHAR
+        data_tests:
+          - not_null
+      - name: FIRST_NAME
+        description: "The first name of the user."
+        data_type: VARCHAR
+      - name: LAST_NAME
+        description: "The last name of the user."
+        data_type: VARCHAR
+      - name: EMAIL
+        description: "The primary email of the user."
+        data_type: VARCHAR
+      - name: LOCATION
+        description: "The location of the user."
+        data_type: VARCHAR
+      - name: COMPANY
+        description: "The company where the user works."
+        data_type: VARCHAR
+      - name: POSITION
+        description: "The position of the user in the company."
+        data_type: VARCHAR
+      - name: SNAPSHOT_DATE
+        description: "The data is partitioned for fast and cost effective queries. The snapshot_timestamp field is converted into a date and stored in the snapshot_date field for partitioning. The date should be used as a condition (WHERE CLAUSE) in the queries."
+        data_type: DATE
+      - name: CREATED_ON
+        description: "The creation time of the user profile."
+        data_type: TIMESTAMP_NTZ
+      - name: IS_TWO_FACTOR_AUTH_ENABLED
+        description: "Indicates if the user had two factor authentication enabled when the snapshot was captured."
+        data_type: BOOLEAN
+      - name: INDUSTRY
+        description: "The industry/discipline that this person is associated with."
+        data_type: VARCHAR
+      - name: TOS_AGREEMENTS
+        description: "Contains the list of all the term of service that the user agreed to, with their agreed on date and version."
+        data_type: VARIANT
